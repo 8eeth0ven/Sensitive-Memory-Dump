@@ -50,14 +50,22 @@ def run_rules(engine, data, rules):
 
 
 def resolve_pid(dev, a):
-    """先按 gadget 端口 ss 解析；否则按包名/进程名匹配。"""
+    """gadget 端口 ss 解析 → adb pidof → frida 枚举兜底。
+
+    Android 的 comm 只有 15 字符(com.xiaomi.youpin→com.xiaomi.youp)，且 frida-server
+    枚举出的 name 常是 App 中文标签(如「小米有品」)而非包名，按包名匹配必落空，
+    故优先走 pidof(对截断名/中文名都可靠)，frida 枚举只做最后兜底。"""
     pid = None
+    adb = a.adb or "adb"
     if a.device == "gadget" and ":" in a.host:
         port = a.host.rsplit(":", 1)[1]
-        adb = a.adb or "adb"
         r = sh(adb, "shell", "su", "-c", "ss -tlnp | grep %s" % port)
         m = re.search(r"pid=(\d+)", r.stdout)
         pid = int(m.group(1)) if m else None
+    if pid is None:
+        r = sh(adb, "shell", "pidof", a.pkg)
+        m = re.search(r"\d+", r.stdout or "")
+        pid = int(m.group(0)) if m else None
     if pid is None and hasattr(dev, "enumerate_processes"):
         procs = dev.enumerate_processes()
         cands = [p for p in procs if a.pkg in p.name or a.pkg.split(".")[-1] in p.name.lower()]
