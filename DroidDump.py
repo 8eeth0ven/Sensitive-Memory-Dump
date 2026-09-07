@@ -158,6 +158,12 @@ def main():
     path = PcDump.export_results(engine.results, a.pkg, os.path.join(a.out, "sensitive_findings.txt"))
     if path:
         print("  结果已导出: %s" % path)
+    # frida 的 reactor 线程非 daemon，不显式退出进程会挂住不返回
+    try:
+        sess.detach()
+    except Exception:
+        pass
+    os._exit(0)
 
 
 if __name__ == "__main__":
