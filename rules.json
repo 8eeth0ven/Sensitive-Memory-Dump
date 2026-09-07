@@ -1,0 +1,139 @@
+{
+  "rules": [
+    {
+      "name": "JS新JS-相对/绝对",
+      "firstRegex": "[\"']((?:https?:)?//[^\"']+\\.js(?:\\?[^\"']*)?|(?:/|\\.[A-Za-z0-9_\\-/\\.]+)\\.js(?:\\?[^\"']*)?)['\"]",
+      "format": "{0}",
+      "color": "orange",
+      "scope": "response",
+      "engine": "regex",
+      "sensitive": false
+    },
+    {
+      "name": "JS动态chunk",
+      "firstRegex": "/chunk[0-9]+/[a-zA-Z0-9_.\\-]+\\.(?:js|css)",
+      "format": "{0}",
+      "color": "orange",
+      "scope": "response",
+      "engine": "regex",
+      "sensitive": false
+    },
+    {
+      "name": "API-通用v路径",
+      "firstRegex": "[\"'](/[a-zA-Z0-9_\\-]+/v[0-9]+(?:\\.[0-9]+){0,2}/[a-zA-Z0-9_\\-/]+)['\"]",
+      "format": "{0}",
+      "color": "cyan",
+      "scope": "response",
+      "engine": "regex",
+      "sensitive": false
+    },
+    {
+      "name": "API-服务前缀",
+      "firstRegex": "[\"']((?:/|https?://[^\"']+/)(?:aisp|ssp|mall|saos|vehicle|lcp|iam|mms|platform|mms|fed|iot|dx|pms|qy|api|webapi|query)[a-zA-Z0-9_\\-]*(?:/[a-zA-Z0-9_\\-/]+)+)['\"]",
+      "format": "{0}",
+      "color": "cyan",
+      "scope": "response",
+      "engine": "regex",
+      "sensitive": false
+    },
+    {
+      "name": "KEY-app_key",
+      "firstRegex": "(?:app_?key|appKey)[\"']?\\s*[:=]\\s*[\"']([0-9a-fA-F]{16,64})['\"]",
+      "format": "{0}",
+      "color": "red",
+      "scope": "response",
+      "engine": "regex",
+      "sensitive": true
+    },
+    {
+      "name": "KEY-MAC/sign-64hex",
+      "firstRegex": "(?:mac_?key|MAC_KEY|X-CHJ-Key|signKey|secretKey|SECRET_KEY)[\"']?\\s*[:=]\\s*[\"']([0-9a-fA-F]{32,64})['\"]",
+      "format": "{0}",
+      "color": "red",
+      "scope": "response",
+      "engine": "regex",
+      "sensitive": true
+    },
+    {
+      "name": "KEY-JWT",
+      "firstRegex": "eyJ[A-Za-z0-9_\\-]{8,}\\.[A-Za-z0-9_\\-]{8,}\\.[A-Za-z0-9_\\-]{8,}",
+      "format": "{0}",
+      "color": "magenta",
+      "scope": "response",
+      "engine": "regex",
+      "sensitive": true
+    },
+    {
+      "name": "KEY-AWS",
+      "firstRegex": "AKIA[0-9A-Z]{16}",
+      "format": "{0}",
+      "color": "red",
+      "scope": "response",
+      "engine": "regex",
+      "sensitive": true
+    },
+    {
+      "name": "KEY-token/secret 泛匹配",
+      "firstRegex": "(?:access_?token|accessToken|refresh_?token|refreshToken|session_?token|sessionToken|Authorization|Bearer)[\"']?\\s*[:=]\\s*[\"']([A-Za-z0-9_\\-.=]{16,})['\"]",
+      "format": "{1}",
+      "color": "magenta",
+      "scope": "response",
+      "engine": "regex",
+      "sensitive": true
+    },
+    {
+      "name": "KEY-通用16+串带key语义",
+      "firstRegex": "[a-zA-Z0-9_\\-]{20,500}(?:secret|token|key|salt|sign)[a-zA-Z0-9_\\-]{0,30}",
+      "format": "{0}",
+      "color": "red",
+      "scope": "response",
+      "engine": "regex",
+      "sensitive": true
+    },
+    {
+      "name": "URL-新host/接口背",
+      "firstRegex": "https?://[a-zA-Z0-9_.\\-]+\\.[a-zA-Z]{2,}/[a-zA-Z0-9_\\-]+",
+      "format": "{0}",
+      "color": "green",
+      "scope": "response",
+      "engine": "regex",
+      "sensitive": false
+    },
+    {
+      "name": "API-app前缀",
+      "firstRegex": "/[a-zA-Z0-9_\\-]*(?:aisp|ssp|lcp|saos|iam|mall|mms|vehicle|qy|api|webapi|bff|account|activity|community|comment|charge|ownerservice|mission|angelia|chitchat|kama|shop|dkg)[a-zA-Z0-9_\\-]*/(?:v[0-9]+(?:-[0-9a-zA-Z]+)?/)?[a-zA-Z0-9_\\-/]{0,60}",
+      "format": "{0}",
+      "color": "cyan",
+      "scope": "response",
+      "engine": "regex",
+      "sensitive": false
+    },
+    {
+      "name": "KEY-裸hex32",
+      "firstRegex": "(?<![0-9a-fA-F])[0-9a-fA-F]{32}(?![0-9a-fA-F])",
+      "format": "{0}",
+      "color": "red",
+      "scope": "response",
+      "engine": "regex",
+      "sensitive": true
+    },
+    {
+      "name": "KEY-裸hex64",
+      "firstRegex": "(?<![0-9a-fA-F])[0-9a-fA-F]{64}(?![0-9a-fA-F])",
+      "format": "{0}",
+      "color": "red",
+      "scope": "response",
+      "engine": "regex",
+      "sensitive": true
+    },
+    {
+      "name": "API-版本服务",
+      "firstRegex": "/[a-z0-9_\\-]+/v[0-9]+(?:\\.[0-9]+){0,2}/[a-zA-Z0-9_\\-/]+",
+      "format": "{0}",
+      "color": "cyan",
+      "scope": "response",
+      "engine": "regex",
+      "sensitive": false
+    }
+  ]
+}

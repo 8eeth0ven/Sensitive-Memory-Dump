@@ -1,0 +1,14 @@
+# 内部移交文档 / 本地备份不入库
+HANDOVER.md
+PcDump.py.bak.*
+
+# dump 与命中结果：可能含真实凭据/隐私，绝不入库
+*.bin
+droid_sens/
+sensitive_findings*
+*.log
+*.png
+
+# Python 运行产物
+__pycache__/
+*.pyc
