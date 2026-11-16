@@ -72,9 +72,14 @@ def build_keyword_pattern(kw):
     )
 
 
+# Compile the fixed rules once and translate bytes in C for each dump chunk.
+KEYWORD_PATTERNS = [(kw, build_keyword_pattern(kw)) for kw in KEYWORDS]
+ASCII_TABLE = bytes(b if 0x20 <= b <= 0x7E else 0x20 for b in range(256))
+
+
 def extract_ascii(data):
     """对应 JS extractAscii：可打印 ASCII 保留，其余占位空格。"""
-    return "".join(chr(b) if 0x20 <= b <= 0x7E else " " for b in data)
+    return bytes(data).translate(ASCII_TABLE).decode("ascii")
 
 
 def extract_utf16le(data, offset=0):
@@ -99,7 +104,7 @@ class MemoryScannerBase:
         value = value.strip()
         if len(value) < 2 or len(value) > 1024:
             return
-        key = rtype + "|" + keyword + "|" + value[:64]
+        key = (rtype, keyword, value)
         if key in self._seen:
             return
         self._seen.add(key)
@@ -115,8 +120,7 @@ class MemoryScannerBase:
         unit = 2 if encoding == "UTF16LE" else 1
         for m in URL_PATTERN.finditer(text):
             self._add("URL", "", m.group(0), hex(base_addr + m.start() * unit), encoding)
-        for kw in KEYWORDS:
-            pat = build_keyword_pattern(kw)
+        for kw, pat in KEYWORD_PATTERNS:
             for m in pat.finditer(text):
                 val = m.group(1) or m.group(0)
                 self._add("KEYWORD", kw, val, hex(base_addr + m.start() * unit), encoding)
@@ -386,7 +390,7 @@ function buildKeywordPattern(kw){ var e=kw.replace(/[.*+?^${}()|[\]\\]/g,'\\$&')
 function addResult(type,keyword,value,address,encoding){
     if(!value||value.length<2) return; value=value.trim();
     if(value.length<2||value.length>1024) return;
-    var key=type+'|'+keyword+'|'+value.substring(0,64);
+    var key=JSON.stringify([type,keyword,value]);
     if(foundSet.has(key)) return; foundSet.add(key);
     results.push({type:type,keyword:keyword,value:value,address:address,encoding:encoding});
 }
